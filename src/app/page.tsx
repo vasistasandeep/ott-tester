@@ -1,24 +1,21 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { generateTestCases, GenerationResult } from "@/lib/engine";
 import { ResultsTable } from "@/components/ResultsTable";
 import { Sidebar } from "@/components/Sidebar";
+import { Navbar } from "@/components/Navbar";
 import { UploadZone } from "@/components/UploadZone";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { exportToCSV } from "@/lib/export";
 import { Sparkles, Layers, FileText, Map, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
+import { toast } from "sonner";
 
 type Tab = "cases" | "scenarios" | "plan";
-
-import { toast } from "sonner";
-import { useEffect } from "react";
-
-// ... imports
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -26,6 +23,7 @@ export default function Home() {
   const [results, setResults] = useState<GenerationResult | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("cases");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [hasApiKey, setHasApiKey] = useState(false);
 
@@ -47,7 +45,7 @@ export default function Home() {
     const toastId = hasApiKey ? toast.loading("AI is thinking...") : toast.loading("Generating mock data...");
 
     try {
-      const data = await generateTestCases(query); // Removed file arg for now as engine simplified
+      const data = await generateTestCases(query);
       setResults(data);
       toast.success("Coverage generated successfully!", { id: toastId });
     } catch (e: any) {
@@ -64,10 +62,25 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground flex overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar className="hidden md:flex flex-shrink-0" />
+      {/* Settings Modal */}
+      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
+      {/* Sidebar (Responsive) */}
+      <Sidebar
+        className="flex-shrink-0"
+        onSettingsClick={() => setIsSettingsOpen(true)}
+        mobileOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        {/* Navbar (New) */}
+        <Navbar
+          onMenuClick={() => setIsSidebarOpen(true)}
+          onSettingsClick={() => setIsSettingsOpen(true)}
+          hasApiKey={hasApiKey}
+        />
+
         {/* Background Effects */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full pointer-events-none opacity-50" />
 
@@ -75,22 +88,10 @@ export default function Home() {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
           <div className="max-w-7xl mx-auto space-y-8">
 
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-              <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-bold tracking-tight text-white">New Verification Task</h1>
-                  {/* API Status Badge */}
-                  <div className={cn(
-                    "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5",
-                    hasApiKey ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                  )}>
-                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", hasApiKey ? "bg-green-500" : "bg-yellow-500")} />
-                    {hasApiKey ? "AI Connected" : "Mock Mode"}
-                  </div>
-                </div>
-                <p className="text-muted-foreground mt-1 text-sm">Describe your feature or upload a PRD to generate coverage.</p>
-              </div>
+            {/* Header Title Only */}
+            <div className="flex flex-col gap-2">
+              <h1 className="text-3xl font-bold tracking-tight text-white">New Verification Task</h1>
+              <p className="text-muted-foreground text-sm">Describe your feature or upload a PRD to generate coverage.</p>
             </div>
 
             {/* Input Section (Grid) */}

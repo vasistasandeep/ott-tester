@@ -15,6 +15,11 @@ import { Card, CardContent } from "@/components/ui/Card";
 
 type Tab = "cases" | "scenarios" | "plan";
 
+import { toast } from "sonner";
+import { useEffect } from "react";
+
+// ... imports
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,16 +27,32 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("cases");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [hasApiKey, setHasApiKey] = useState(false);
+
+  // Check for API Key on mount and when settings close
+  useEffect(() => {
+    setHasApiKey(!!localStorage.getItem("ott_tester_api_key"));
+  }, [isSettingsOpen]);
 
   const handleGenerate = async () => {
-    if (!query && !uploadedFile) return;
+    if (!query && !uploadedFile) {
+      toast.error("Please describe a feature or upload a file.");
+      return;
+    }
+
     setLoading(true);
     setResults(null);
+
+    // Optimistic UI for AI mode
+    const toastId = hasApiKey ? toast.loading("AI is thinking...") : toast.loading("Generating mock data...");
+
     try {
-      const data = await generateTestCases(query);
+      const data = await generateTestCases(query); // Removed file arg for now as engine simplified
       setResults(data);
-    } catch (e) {
+      toast.success("Coverage generated successfully!", { id: toastId });
+    } catch (e: any) {
       console.error(e);
+      toast.error(e.message || "Generation Failed", { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -57,7 +78,17 @@ export default function Home() {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-white">New Verification Task</h1>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold tracking-tight text-white">New Verification Task</h1>
+                  {/* API Status Badge */}
+                  <div className={cn(
+                    "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5",
+                    hasApiKey ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                  )}>
+                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", hasApiKey ? "bg-green-500" : "bg-yellow-500")} />
+                    {hasApiKey ? "AI Connected" : "Mock Mode"}
+                  </div>
+                </div>
                 <p className="text-muted-foreground mt-1 text-sm">Describe your feature or upload a PRD to generate coverage.</p>
               </div>
             </div>

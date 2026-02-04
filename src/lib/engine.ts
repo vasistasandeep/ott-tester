@@ -35,23 +35,32 @@ export async function generateTestCases(input: string): Promise<GenerationResult
     // 1. Check for API Key (Client-side retrieval)
     const apiKey = typeof window !== "undefined" ? localStorage.getItem("ott_tester_api_key") : null;
 
+    console.log("[Engine] Checking API Key:", apiKey ? "Found" : "Not Found");
+
     if (apiKey) {
         try {
+            console.log("[Engine] Calling Real AI...");
             const response = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ prompt: input, apiKey }),
             });
 
-            if (!response.ok) throw new Error("AI Generation Failed");
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || `AI Request Failed: ${response.statusText}`);
+            }
 
             const data = await response.json();
             return data as GenerationResult;
 
-        } catch (error) {
-            console.error("Falling back to mock engine due to error:", error);
-            // Fallthrough to mock logic below
+        } catch (error: any) {
+            console.error("[Engine] AI Error:", error);
+            // V4 CHANGE: Do NOT fallback silently. Re-throw so UI can show Toast.
+            throw error;
         }
+    } else {
+        console.warn("[Engine] No API Key found. Using Mock Data.");
     }
 
     // 2. Mock Logic (Fallback)

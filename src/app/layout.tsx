@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "AI-Powered Test Case Generator for OTT Platforms",
 };
 
+import { Toaster } from 'sonner';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+        <Toaster position="top-right" theme="dark" richColors />
+      </body>
     </html>
   );
 }

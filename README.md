@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OTT Test Case Generator (V3)
+
+A premium, AI-powered dashboard for generating enterprise-grade test coverage for OTT platforms (SonyLIV, Netflix, etc.).
+Built with **Next.js 14**, **TailwindCSS**, and **Google Gemini Pro**.
+
+![Dashboard Preview](https://via.placeholder.com/800x400.png?text=OTT+Tester+Dashboard)
+
+## Features
+
+- **\uD83E\uDDE0 Real Intelligence**: Generates infinite test scenarios using Google Gemini Pro.
+- **\uD83D\uDCCA Dashboard Interface**: Professional split-view layout with Sidebar navigation.
+- **\uD83D\uDCC2 File Integration**: Drag & Drop PRDs/Docs to generate context-aware coverage.
+- **\uD83D\uDCE5 Export**: Download test plans as CSV for Jira/Excel import.
+- **\uD83D\uDD12 Secure**: BYOK (Bring Your Own Key) architecture. API usage is client-side only; keys are stored in your browser's Local Storage.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+ installed.
+- A free [Google Gemini API Key](https://aistudio.google.com/app/apikey).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1.  **Clone the repository** (or navigate to folder):
+    ```bash
+    cd ott_tester
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
 
-## Learn More
+4.  **Open Browser**:
+    Visit [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## How to Use
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Configure AI**:
+    - Click **Settings** in the sidebar.
+    - Paste your Gemini API Key.
+    - Click **Save**.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Generate Coverage**:
+    - Enter a feature description (e.g., *"Ad Insertion flows for Live Cricket"*).
+    - (Optional) Drag & drop a requirement document (PDF/Text).
+    - Click **Generate Coverage**.
 
-## Deploy on Vercel
+3.  **Analyze & Export**:
+    - Switch tabs to view **Test Cases**, **User Scenarios**, and **Test Plan**.
+    - Click **Export** to download the CSV.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Vercel (Recommended)
+This app is optimized for Vercel.
+
+1.  Push code to GitHub/GitLab.
+2.  Import project in Vercel.
+3.  **No Environment Variables needed** (API Key is handled client-side).
+4.  Click **Deploy**.
+
+## Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: TailwindCSS + Framer Motion
+- **Icons**: Lucide React
+- **AI**: Google Generative AI SDK
+
+---
+*Created by [Your Name/Antigravity]*

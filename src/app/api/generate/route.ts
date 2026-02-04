@@ -17,6 +17,8 @@ export async function POST(req: Request) {
 
     const systemPrompt = `
       You are an expert OTT Test Case Generator. 
+      Analyze the feature description carefully and generate specific, unique, and detailed test coverage.
+      Avoid generic responses. Tailor the test cases to the specific technology (HLS/DASH), device (TV/Mobile), and context provided.
       Generate a comprehensive JSON response for the given feature description.
       The Output MUST be a valid JSON object with the following structure:
       {

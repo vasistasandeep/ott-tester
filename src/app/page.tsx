@@ -168,21 +168,36 @@ export default function Home() {
                         </button>
                       ))}
                       <div className="flex-1" />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="hidden sm:flex"
-                        onClick={() => results && exportToCSV(results.testCases)}
-                        disabled={!results}
-                      >
-                        <Download className="w-4 h-4 mr-2" /> Export
-                      </Button>
                     </div>
+
+                    {/* Mock Data Warning */}
+                    {!hasApiKey && results && (
+                      <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 flex items-center gap-3 text-sm text-yellow-500 mb-4">
+                        <Sparkles className="w-4 h-4" />
+                        <span>
+                          <strong>Using Static Mock Data.</strong> To generate real test cases for "<em>{query}</em>", please <button onClick={() => setIsSettingsOpen(true)} className="underline hover:text-yellow-400">connect your API Key</button>.
+                        </span>
+                      </div>
+                    )}
 
                     {/* Tab Content */}
                     <div className="min-h-[400px]">
                       {activeTab === "cases" && (
-                        <ResultsTable data={results.testCases} />
+                        <div className="space-y-4">
+                          <ResultsTable data={results.testCases} />
+
+                          {/* Export Button (After Cases) */}
+                          <div className="flex justify-end pt-4 border-t border-white/10">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => exportToCSV(results.testCases)}
+                              className="gap-2"
+                            >
+                              <Download className="w-4 h-4" /> Download CSV
+                            </Button>
+                          </div>
+                        </div>
                       )}
 
                       {activeTab === "scenarios" && (
